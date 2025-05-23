@@ -51,6 +51,61 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /sensor-data/{device_id}/latest:
+    get:
+      summary: Get latest sensor reading
+      description: Retrieve the most recent temperature and humidity reading for a specific device
+      operationId: getLatestSensorData
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          description: Unique identifier for the ESP8266 device (MAC address)
+          schema:
+            type: string
+            pattern: "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
+            example: "AA:BB:CC:DD:EE:FF"
+      responses:
+        '200':
+          description: Latest sensor data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensorReading'
+              examples:
+                latest_reading:
+                  summary: Latest sensor reading
+                  value:
+                    temperature: 68.1
+                    humidity: 58.7
+                    timestamp: 1640999800
+                    device_id: "AA:BB:CC:DD:EE:FF"
+        '404':
+          description: Device not found or no data available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                device_not_found:
+                  summary: Device not found
+                  value:
+                    status: "error"
+                    message: "No data found for device AA:BB:CC:DD:EE:FF"
+                    details: []
+        '400':
+          description: Invalid device ID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   schemas:
     SensorReading:
