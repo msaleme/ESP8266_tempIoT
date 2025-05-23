@@ -27,7 +27,7 @@ paths:
               typical_reading:
                 summary: Typical sensor reading
                 value:
-                  temperature: 23.5
+                  temperature: 63.5
                   humidity: 65.2
                   timestamp: 1640995200
                   device_id: "AA:BB:CC:DD:EE:FF"
@@ -64,10 +64,10 @@ components:
         temperature:
           type: number
           format: float
-          description: Temperature in Celsius
-          example: 23.5
-          minimum: -40
-          maximum: 80
+          description: Temperature in Fahrenheit
+          example: 63.5
+          minimum: -20
+          maximum: 150
         humidity:
           type: number
           format: float
