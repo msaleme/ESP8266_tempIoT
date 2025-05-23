@@ -1,0 +1,116 @@
+openapi: 3.0.3
+info:
+  title: ESP8266 Sensor Data API
+  description: API for receiving temperature and humidity data from ESP8266 sensors
+  version: 1.0.0
+  contact:
+    name: Sensor Monitoring System
+    email: admin@example.com
+
+servers:
+  - url: https://your-api-domain.com/api
+    description: Production server
+
+paths:
+  /sensor-data:
+    post:
+      summary: Submit sensor readings
+      description: Endpoint to receive temperature and humidity data from ESP8266 devices
+      operationId: submitSensorData
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SensorReading'
+            examples:
+              typical_reading:
+                summary: Typical sensor reading
+                value:
+                  temperature: 23.5
+                  humidity: 65.2
+                  timestamp: 1640995200
+                  device_id: "AA:BB:CC:DD:EE:FF"
+      responses:
+        '200':
+          description: Data received successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    SensorReading:
+      type: object
+      required:
+        - temperature
+        - humidity
+        - timestamp
+        - device_id
+      properties:
+        temperature:
+          type: number
+          format: float
+          description: Temperature in Celsius
+          example: 23.5
+          minimum: -40
+          maximum: 80
+        humidity:
+          type: number
+          format: float
+          description: Relative humidity percentage
+          example: 65.2
+          minimum: 0
+          maximum: 100
+        timestamp:
+          type: integer
+          format: int64
+          description: Unix timestamp when the reading was taken
+          example: 1640995200
+        device_id:
+          type: string
+          description: Unique identifier for the ESP8266 device (MAC address)
+          example: "AA:BB:CC:DD:EE:FF"
+          pattern: "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
+
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "success"
+        message:
+          type: string
+          example: "Sensor data received successfully"
+        id:
+          type: string
+          description: Unique identifier for the stored reading
+          example: "reading_12345"
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "error"
+        message:
+          type: string
+          example: "Invalid sensor data format"
+        details:
+          type: array
+          items:
+            type: string
+          example: ["Temperature value out of range", "Missing device_id field"]
