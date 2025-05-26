@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: ESP8266 Sensor Data API
-  description: API for receiving temperature and humidity data from ESP8266 sensors
-  version: 1.0.0
+  description: API for receiving comprehensive sensor data from ESP8266 devices including environmental readings, device diagnostics, and performance metrics
+  version: 2.0.0
   contact:
     name: Sensor Monitoring System
     email: admin@example.com
@@ -24,13 +24,71 @@ paths:
             schema:
               $ref: '#/components/schemas/SensorReading'
             examples:
-              typical_reading:
-                summary: Typical sensor reading
+              comprehensive_reading:
+                summary: Comprehensive sensor reading with full data payload
                 value:
-                  temperature: 63.5
-                  humidity: 65.2
-                  timestamp: 1640995200
-                  device_id: "AA:BB:CC:DD:EE:FF"
+                  sensor_data:
+                    temperature: 75.8
+                    temperature_unit: "F"
+                    humidity: 52.3
+                    heat_index: 77.2
+                    dew_point: 56.4
+                    absolute_humidity: 10.1
+                    comfort_level: "comfortable"
+                  metadata:
+                    timestamp: 1716742800
+                    timestamp_iso: "2025-05-26T17:00:00Z"
+                    local_time: "2025-05-26 12:00:00 CDT"
+                    device_id: "AA:BB:CC:DD:EE:FF"
+                    sensor_type: "DHT22"
+                    firmware_version: "2.1.0"
+                    transmission_type: "full"
+                  device_info:
+                    chip_id: "abc12345"
+                    flash_chip_id: "def67890"
+                    sketch_size: 295936
+                    free_sketch_space: 2752512
+                    sdk_version: "3.0.5"
+                    boot_version: 7
+                    reset_reason: "External System"
+                  power_management:
+                    vcc_voltage: 3.28
+                    deep_sleep_duration: 300
+                    wake_reason: "timer"
+                  connectivity:
+                    wifi_ssid: "ASUS_I"
+                    wifi_rssi: -48
+                    wifi_quality: "excellent"
+                    wifi_channel: 6
+                    ip_address: "192.168.1.105"
+                    gateway: "192.168.1.1"
+                  performance:
+                    free_heap: 47832
+                    heap_fragmentation: 6
+                    max_free_block: 44128
+                    cpu_frequency: 80
+                    uptime: "23s"
+                    wifi_connect_time_ms: 3420
+                    sensor_read_time_ms: 253
+                    loop_execution_time_ms: 1847
+                  statistics:
+                    total_readings: 144
+                    successful_transmissions: 141
+                    failed_transmissions: 3
+                    sensor_failures: 2
+                    wifi_disconnects: 1
+                    api_errors: 1
+                    average_temperature_24h: 73.2
+                    min_temperature_24h: 68.5
+                    max_temperature_24h: 78.9
+                    average_humidity_24h: 48.7
+                    min_humidity_24h: 35.2
+                    max_humidity_24h: 67.1
+                    data_quality_score: 97.9
+                  diagnostics:
+                    recent_errors:
+                      - "wifi_timeout"
+                      - "api_failed"
       responses:
         '200':
           description: Data received successfully
@@ -44,6 +102,71 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sensor-data/latest:
+    get:
+      summary: Get latest readings from all sensors
+      description: Retrieve the most recent temperature and humidity reading from all ESP8266 devices
+      operationId: getAllLatestSensorData
+      responses:
+        '200':
+          description: Latest sensor data from all devices retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SensorReading'
+              examples:
+                all_latest_readings:
+                  summary: Latest readings from multiple devices
+                  value:
+                    status: "success"
+                    data:
+                      - sensor_data:
+                          temperature: 68.1
+                          temperature_unit: "F"
+                          humidity: 58.7
+                          heat_index: 70.2
+                          dew_point: 52.1
+                          absolute_humidity: 8.9
+                          comfort_level: "comfortable"
+                        metadata:
+                          timestamp: 1640999800
+                          timestamp_iso: "2025-05-26T18:30:00Z"
+                          local_time: "2025-05-26 13:30:00 CDT"
+                          device_id: "AA:BB:CC:DD:EE:FF"
+                          sensor_type: "DHT22"
+                          firmware_version: "2.1.0"
+                          transmission_type: "full"
+                      - sensor_data:
+                          temperature: 71.3
+                          temperature_unit: "F"
+                          humidity: 62.1
+                          heat_index: 74.8
+                          dew_point: 57.2
+                          absolute_humidity: 11.2
+                          comfort_level: "comfortable"
+                        metadata:
+                          timestamp: 1640999750
+                          timestamp_iso: "2025-05-26T18:29:10Z"
+                          local_time: "2025-05-26 13:29:10 CDT"
+                          device_id: "11:22:33:44:55:66"
+                          sensor_type: "DHT22"
+                          firmware_version: "2.1.0"
+                          transmission_type: "full"
         '500':
           description: Internal server error
           content:
@@ -74,12 +197,24 @@ paths:
                 $ref: '#/components/schemas/SensorReading'
               examples:
                 latest_reading:
-                  summary: Latest sensor reading
+                  summary: Latest comprehensive sensor reading
                   value:
-                    temperature: 68.1
-                    humidity: 58.7
-                    timestamp: 1640999800
-                    device_id: "AA:BB:CC:DD:EE:FF"
+                    sensor_data:
+                      temperature: 68.1
+                      temperature_unit: "F"
+                      humidity: 58.7
+                      heat_index: 70.2
+                      dew_point: 52.1
+                      absolute_humidity: 8.9
+                      comfort_level: "comfortable"
+                    metadata:
+                      timestamp: 1640999800
+                      timestamp_iso: "2025-05-26T18:30:00Z"
+                      local_time: "2025-05-26 13:30:00 CDT"
+                      device_id: "AA:BB:CC:DD:EE:FF"
+                      sensor_type: "DHT22"
+                      firmware_version: "2.1.0"
+                      transmission_type: "full"
         '404':
           description: Device not found or no data available
           content:
@@ -111,35 +246,301 @@ components:
     SensorReading:
       type: object
       required:
+        - sensor_data
+        - metadata
+      properties:
+        sensor_data:
+          $ref: '#/components/schemas/SensorData'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        device_info:
+          $ref: '#/components/schemas/DeviceInfo'
+        power_management:
+          $ref: '#/components/schemas/PowerManagement'
+        connectivity:
+          $ref: '#/components/schemas/Connectivity'
+        performance:
+          $ref: '#/components/schemas/Performance'
+        statistics:
+          $ref: '#/components/schemas/Statistics'
+        diagnostics:
+          $ref: '#/components/schemas/Diagnostics'
+
+    SensorData:
+      type: object
+      required:
         - temperature
         - humidity
-        - timestamp
-        - device_id
       properties:
         temperature:
           type: number
           format: float
-          description: Temperature in Fahrenheit
-          example: 63.5
-          minimum: -20
+          description: Temperature reading
+          example: 75.8
+          minimum: -40
           maximum: 150
+        temperature_unit:
+          type: string
+          description: Temperature unit
+          example: "F"
+          enum: ["F", "C"]
         humidity:
           type: number
           format: float
           description: Relative humidity percentage
-          example: 65.2
+          example: 52.3
           minimum: 0
           maximum: 100
+        heat_index:
+          type: number
+          format: float
+          description: Calculated heat index
+          example: 77.2
+        dew_point:
+          type: number
+          format: float
+          description: Calculated dew point
+          example: 56.4
+        absolute_humidity:
+          type: number
+          format: float
+          description: Absolute humidity in g/m³
+          example: 10.1
+        comfort_level:
+          type: string
+          description: Comfort level assessment
+          example: "comfortable"
+          enum: ["very_dry", "dry", "comfortable", "humid", "very_humid"]
+
+    Metadata:
+      type: object
+      required:
+        - timestamp
+        - device_id
+      properties:
         timestamp:
           type: integer
           format: int64
           description: Unix timestamp when the reading was taken
-          example: 1640995200
+          example: 1716742800
+        timestamp_iso:
+          type: string
+          format: date-time
+          description: ISO 8601 formatted timestamp
+          example: "2025-05-26T17:00:00Z"
+        local_time:
+          type: string
+          description: Local time representation
+          example: "2025-05-26 12:00:00 CDT"
         device_id:
           type: string
           description: Unique identifier for the ESP8266 device (MAC address)
           example: "AA:BB:CC:DD:EE:FF"
           pattern: "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
+        sensor_type:
+          type: string
+          description: Type of sensor used
+          example: "DHT22"
+        firmware_version:
+          type: string
+          description: Firmware version of the device
+          example: "2.1.0"
+        transmission_type:
+          type: string
+          description: Type of data transmission
+          example: "full"
+          enum: ["full", "basic", "minimal"]
+
+    DeviceInfo:
+      type: object
+      properties:
+        chip_id:
+          type: string
+          description: Chip identifier
+          example: "abc12345"
+        flash_chip_id:
+          type: string
+          description: Flash chip identifier
+          example: "def67890"
+        sketch_size:
+          type: integer
+          description: Size of the compiled sketch in bytes
+          example: 295936
+        free_sketch_space:
+          type: integer
+          description: Available flash memory in bytes
+          example: 2752512
+        sdk_version:
+          type: string
+          description: SDK version
+          example: "3.0.5"
+        boot_version:
+          type: integer
+          description: Boot loader version
+          example: 7
+        reset_reason:
+          type: string
+          description: Reason for last reset
+          example: "External System"
+
+    PowerManagement:
+      type: object
+      properties:
+        vcc_voltage:
+          type: number
+          format: float
+          description: Supply voltage in volts
+          example: 3.28
+        deep_sleep_duration:
+          type: integer
+          description: Deep sleep duration in seconds
+          example: 300
+        wake_reason:
+          type: string
+          description: Reason for waking from sleep
+          example: "timer"
+
+    Connectivity:
+      type: object
+      properties:
+        wifi_ssid:
+          type: string
+          description: WiFi network name
+          example: "ASUS_I"
+        wifi_rssi:
+          type: integer
+          description: WiFi signal strength in dBm
+          example: -48
+        wifi_quality:
+          type: string
+          description: WiFi connection quality assessment
+          example: "excellent"
+          enum: ["poor", "fair", "good", "excellent"]
+        wifi_channel:
+          type: integer
+          description: WiFi channel number
+          example: 6
+        ip_address:
+          type: string
+          format: ipv4
+          description: Device IP address
+          example: "192.168.1.105"
+        gateway:
+          type: string
+          format: ipv4
+          description: Gateway IP address
+          example: "192.168.1.1"
+
+    Performance:
+      type: object
+      properties:
+        free_heap:
+          type: integer
+          description: Free heap memory in bytes
+          example: 47832
+        heap_fragmentation:
+          type: integer
+          description: Heap fragmentation percentage
+          example: 6
+        max_free_block:
+          type: integer
+          description: Largest free memory block in bytes
+          example: 44128
+        cpu_frequency:
+          type: integer
+          description: CPU frequency in MHz
+          example: 80
+        uptime:
+          type: string
+          description: Device uptime
+          example: "23s"
+        wifi_connect_time_ms:
+          type: integer
+          description: WiFi connection time in milliseconds
+          example: 3420
+        sensor_read_time_ms:
+          type: integer
+          description: Sensor reading time in milliseconds
+          example: 253
+        loop_execution_time_ms:
+          type: integer
+          description: Main loop execution time in milliseconds
+          example: 1847
+
+    Statistics:
+      type: object
+      properties:
+        total_readings:
+          type: integer
+          description: Total number of sensor readings taken
+          example: 144
+        successful_transmissions:
+          type: integer
+          description: Number of successful data transmissions
+          example: 141
+        failed_transmissions:
+          type: integer
+          description: Number of failed data transmissions
+          example: 3
+        sensor_failures:
+          type: integer
+          description: Number of sensor reading failures
+          example: 2
+        wifi_disconnects:
+          type: integer
+          description: Number of WiFi disconnections
+          example: 1
+        api_errors:
+          type: integer
+          description: Number of API errors encountered
+          example: 1
+        average_temperature_24h:
+          type: number
+          format: float
+          description: 24-hour average temperature
+          example: 73.2
+        min_temperature_24h:
+          type: number
+          format: float
+          description: 24-hour minimum temperature
+          example: 68.5
+        max_temperature_24h:
+          type: number
+          format: float
+          description: 24-hour maximum temperature
+          example: 78.9
+        average_humidity_24h:
+          type: number
+          format: float
+          description: 24-hour average humidity
+          example: 48.7
+        min_humidity_24h:
+          type: number
+          format: float
+          description: 24-hour minimum humidity
+          example: 35.2
+        max_humidity_24h:
+          type: number
+          format: float
+          description: 24-hour maximum humidity
+          example: 67.1
+        data_quality_score:
+          type: number
+          format: float
+          description: Overall data quality score (0-100)
+          example: 97.9
+          minimum: 0
+          maximum: 100
+
+    Diagnostics:
+      type: object
+      properties:
+        recent_errors:
+          type: array
+          description: List of recent error codes
+          items:
+            type: string
+          example: ["wifi_timeout", "api_failed"]
 
     SuccessResponse:
       type: object
