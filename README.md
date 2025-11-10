@@ -2,6 +2,8 @@
 
 An advanced ESP8266-based IoT temperature and humidity monitoring system with enhanced telemetry, energy efficiency, and comprehensive error handling.
 
+> **Related Repository:** [IoTDashboard](https://github.com/msaleme/IoTDashboard) - Web dashboard for visualizing sensor data
+
 ## Version 2.1.0 Features
 
 ### 🚀 Enhanced Functionality
@@ -140,6 +142,15 @@ The system provides extensive monitoring capabilities:
 - **24-Hour Trends**: Rolling statistics and extremes
 - **System Health**: Success rates, error frequencies
 - **Performance Data**: Timing metrics and resource usage
+
+## Data Visualization
+
+See the [IoTDashboard](https://github.com/msaleme/IoTDashboard) repository for a real-time web dashboard that visualizes data from these sensors, featuring:
+- Live sensor monitoring with custom location labels
+- Health indicators and failure rate tracking
+- 24-hour statistics charts
+- WiFi signal strength monitoring
+- Chart.js visualizations for temperature and humidity trends
 
 ## Version History
 
